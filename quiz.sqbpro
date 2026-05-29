@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="quiz.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2168"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="opciones" custom_title="0" dock_id="1" table="4,8:mainopciones"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000011300ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1*">-- Insertar las 10 Preguntas Adicionales
+INSERT INTO preguntas (id, texto_pregunta, tema) VALUES
+(16, '¿Qué problema resuelve un algoritmo de consenso como Paxos o Raft?', 'Sistemas Distribuidos'),
+(17, 'En modelos de consistencia de datos, la &quot;consistencia eventual&quot; garantiza que:', 'Sistemas Distribuidos'),
+(18, '¿Qué es un &quot;heartbeat&quot; (latido) en el contexto de sistemas distribuidos?', 'Sistemas Distribuidos'),
+(19, '¿Cuál de los siguientes es un ejemplo de un sistema de colas de mensajes (Message Queue)?', 'Sistemas Distribuidos'),
+(20, 'La &quot;serialización&quot; (o marshalling) de datos se refiere al proceso de:', 'Sistemas Distribuidos'),
+(21, '¿Qué es una tabla de hash distribuida (DHT)?', 'Sistemas Distribuidos'),
+(22, 'La &quot;idempotencia&quot; de una operación en un sistema distribuido significa que:', 'Sistemas Distribuidos'),
+(23, '¿Cuál es el propósito del mecanismo &quot;Two-Phase Commit&quot; (2PC)?', 'Sistemas Distribuidos'),
+(24, '¿Qué es el &quot;balanceo de carga&quot; (Load Balancing)?', 'Sistemas Distribuidos'),
+(25, 'El concepto de &quot;reloj lógico&quot; (como el de Lamport) se utiliza para:', 'Sistemas Distribuidos');
+
+-- Insertar las Opciones Adicionales
+-- Opciones para Pregunta 16 (Correcta: a)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(16, 'Asegurar que todos los nodos en un sistema se pongan de acuerdo sobre un valor, incluso con fallos.', 1),
+(16, 'Encriptar la comunicación entre los nodos.', 0),
+(16, 'Comprimir los datos para ahorrar espacio.', 0),
+(16, 'Asignar direcciones IP a los nodos.', 0);
+-- Opciones para Pregunta 17 (Correcta: b)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(17, 'Todas las lecturas verán la escritura más reciente de forma inmediata.', 0),
+(17, 'Si no se realizan nuevas actualizaciones, eventualmente todas las réplicas convergerán al mismo valor.', 1),
+(17, 'El sistema nunca permitirá datos inconsistentes.', 0),
+(17, 'Las transacciones siempre se ejecutan en el mismo orden en todas las réplicas.', 0);
+-- Opciones para Pregunta 18 (Correcta: b)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(18, 'Una medida del rendimiento del CPU de un nodo.', 0),
+(18, 'Un mensaje periódico que un nodo envía para indicar que sigue activo y funcionando.', 1),
+(18, 'Un algoritmo para ordenar eventos.', 0),
+(18, 'Una técnica de encriptación.', 0);
+-- Opciones para Pregunta 19 (Correcta: c)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(19, 'HTTP', 0),
+(19, 'FTP', 0),
+(19, 'RabbitMQ o Apache Kafka', 1),
+(19, 'NFS', 0);
+-- Opciones para Pregunta 20 (Correcta: b)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(20, 'Ordenar los datos alfabéticamente.', 0),
+(20, 'Convertir una estructura de datos u objeto en un formato que pueda ser almacenado o transmitido.', 1),
+(20, 'Asegurar que solo un proceso acceda a los datos a la vez.', 0),
+(20, 'Dividir los datos en paquetes para su envío.', 0);
+-- Opciones para Pregunta 21 (Correcta: b)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(21, 'Una base de datos centralizada de alta velocidad.', 0),
+(21, 'Un sistema que proporciona un servicio de búsqueda similar a un diccionario (`clave: valor`) distribuido entre nodos.', 1),
+(21, 'Un método para cifrar contraseñas.', 0),
+(21, 'Una caché de memoria en un servidor web.', 0);
+-- Opciones para Pregunta 22 (Correcta: b)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(22, 'La operación es muy rápida.', 0),
+(22, 'La operación se puede ejecutar una vez o múltiples veces con el mismo resultado.', 1),
+(22, 'La operación no puede fallar.', 0),
+(22, 'La operación solo puede ser ejecutada por el administrador.', 0);
+-- Opciones para Pregunta 23 (Correcta: c)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(23, 'Elegir un nuevo líder en el sistema.', 0),
+(23, 'Sincronizar los relojes de todos los nodos.', 0),
+(23, 'Garantizar que una transacción distribuida sea atómica (o todos los nodos la confirman o todos la abortan).', 1),
+(23, 'Balancear la carga de trabajo entre los nodos.', 0);
+-- Opciones para Pregunta 24 (Correcta: a)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(24, 'Distribuir el tráfico de red o las solicitudes de cómputo entre múltiples servidores.', 1),
+(24, 'Asegurarse de que todos los servidores tengan la misma cantidad de RAM.', 0),
+(24, 'Un tipo de cortafuegos (firewall).', 0),
+(24, 'Reiniciar un servidor cuando se sobrecarga.', 0);
+-- Opciones para Pregunta 25 (Correcta: c)
+INSERT INTO opciones (pregunta_id, texto_opcion, es_correcta) VALUES
+(25, 'Mostrar la hora actual al usuario.', 0),
+(25, 'Medir el tiempo exacto de ejecución de una tarea.', 0),
+(25, 'Establecer un orden causal parcial entre eventos en un sistema distribuido sin un reloj global.', 1),
+(25, 'Apagar los servidores en un horario determinado.', 0);</sql><current_tab id="0"/></tab_sql></sqlb_project>
