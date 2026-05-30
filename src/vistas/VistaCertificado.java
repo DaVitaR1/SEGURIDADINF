@@ -8,6 +8,9 @@ import javax.swing.*;
 import modelo.Usuario;
 import modelo.CursoSugerido;
 import logica.GestorSugerencias;
+import crypto.CryptoManager;
+import datos.DatabaseManager;
+import java.security.KeyPair;
 
 public class VistaCertificado extends JFrame
 {
@@ -16,6 +19,16 @@ public class VistaCertificado extends JFrame
 
     public VistaCertificado(Usuario usuario, double calificacion, String tema)
     {
+        DatabaseManager dbManager = new DatabaseManager();
+        String contenidoCert = usuario.getNombreUsuario() + "|" + tema + "|" +
+                               String.format("%.2f", calificacion) + "|" +
+                               new java.util.Date().toString();
+        String hashCert = CryptoManager.sha256(contenidoCert);
+        KeyPair parClaves = CryptoManager.cargarClaves(".");
+        String firmaRsa = CryptoManager.firmar(contenidoCert, parClaves.getPrivate());
+        dbManager.guardarCertificado(usuario.getId(), tema, calificacion, hashCert, firmaRsa);
+        String codigoVerificacion = hashCert.substring(0, 16).toUpperCase();
+
         setTitle("Certificado Oficial");
         // Aumentamos un poco la altura para que todo quepa holgadamente
         setSize(850, 720);
@@ -117,6 +130,18 @@ public class VistaCertificado extends JFrame
         txtCursos.setText(sb.toString());
         bordeMarco.add(txtCursos);
 
+        // --- CÓDIGO DE VERIFICACIÓN ---
+        JSeparator lineaCodigo = new JSeparator();
+        lineaCodigo.setForeground(new Color(200, 200, 200));
+        lineaCodigo.setBounds(50, 475, 715, 5);
+        bordeMarco.add(lineaCodigo);
+
+        JLabel lblCodigo = new JLabel("Código de verificación: " + codigoVerificacion, SwingConstants.LEFT);
+        lblCodigo.setFont(new Font("Monospaced", Font.PLAIN, 10));
+        lblCodigo.setForeground(new Color(130, 130, 130));
+        lblCodigo.setBounds(50, 480, 450, 15);
+        bordeMarco.add(lblCodigo);
+
         // --- ZONA DE FIRMA (Actualizada) ---
         // 1. Componente de Firma Falsa (Dibujo)
         PanelFirma firmaDibujada = new PanelFirma();
@@ -158,13 +183,20 @@ public class VistaCertificado extends JFrame
         btnSalir.setForeground(Color.WHITE);
         btnSalir.setFocusPainted(false);
 
+        JButton btnVerificar = new JButton("Verificar Certificado");
+        btnVerificar.setBackground(new Color(30, 100, 30));
+        btnVerificar.setForeground(Color.WHITE);
+        btnVerificar.setFocusPainted(false);
+
         panelBotones.add(btnImprimir);
+        panelBotones.add(btnVerificar);
         panelBotones.add(btnSalir);
 
         add(panelBotones, BorderLayout.SOUTH);
 
         btnSalir.addActionListener(e -> System.exit(0));
         btnImprimir.addActionListener(e -> imprimirCertificado());
+        btnVerificar.addActionListener(e -> new vistas.VistaVerificador().setVisible(true));
     }
 
     private void imprimirCertificado()

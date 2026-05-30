@@ -10,11 +10,12 @@ import modelo.Opcion;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Usuario;
+import crypto.CryptoManager;
 
 public class DatabaseManager
 {
 
-    private static final String URL = "jdbc:sqlite:C:/Users/berpy/Documents/NetBeansProjects/PP/quiz.db";
+    private static final String URL = "jdbc:sqlite:quiz.db";
 
     private Connection connect()
     {
@@ -38,16 +39,17 @@ public class DatabaseManager
      */
     public boolean validarUsuario(String username, String password)
     {
-        // Consulta SQL segura para evitar inyección
-        String sql = "SELECT id FROM usuarios WHERE nombre_usuario = ? AND password = ?";
+        String sql = "SELECT password FROM usuarios WHERE nombre_usuario = ?";
         try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql))
         {
-
             pstmt.setString(1, username);
-            pstmt.setString(2, password);
-
             ResultSet rs = pstmt.executeQuery();
-            return rs.next(); // Devuelve true si la consulta encontró una coincidencia
+            if (rs.next())
+            {
+                String hashAlmacenado = rs.getString("password");
+                return CryptoManager.verificarPassword(password, hashAlmacenado);
+            }
+            return false;
         } catch (SQLException e)
         {
             System.out.println("Error al validar usuario: " + e.getMessage());
@@ -67,9 +69,9 @@ public class DatabaseManager
         String sql = "INSERT INTO usuarios(nombre_usuario, password) VALUES(?,?)";
         try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql))
         {
-
+            String passwordSegura = CryptoManager.hashPassword(password);
             pstmt.setString(1, username);
-            pstmt.setString(2, password);
+            pstmt.setString(2, passwordSegura);
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e)
@@ -235,6 +237,54 @@ public class DatabaseManager
             System.out.println("Error al obtener temas: " + e.getMessage());
         }
         return temas;
+    }
+
+    public boolean guardarCertificado(int usuarioId, String tema, double calificacion,
+                                      String hashCert, String firmaRsa)
+    {
+        String sql = "INSERT INTO certificados(usuario_id, tema, calificacion, hash_cert, firma_rsa, fecha_emision) VALUES(?,?,?,?,?,?)";
+        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setInt(1, usuarioId);
+            pstmt.setString(2, tema);
+            pstmt.setDouble(3, calificacion);
+            pstmt.setString(4, hashCert);
+            pstmt.setString(5, firmaRsa);
+            pstmt.setString(6, new java.util.Date().toString());
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e)
+        {
+            System.out.println("Error al guardar certificado: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public String[] buscarCertificadoPorHash(String hashCert)
+    {
+        String sql = "SELECT u.nombre_usuario, c.tema, c.calificacion, c.firma_rsa, c.fecha_emision "
+                + "FROM certificados c JOIN usuarios u ON c.usuario_id = u.id "
+                + "WHERE c.hash_cert = ?";
+        try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setString(1, hashCert);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next())
+            {
+                return new String[]
+                {
+                    rs.getString("nombre_usuario"),
+                    rs.getString("tema"),
+                    String.valueOf(rs.getDouble("calificacion")),
+                    rs.getString("firma_rsa"),
+                    rs.getString("fecha_emision")
+                };
+            }
+        } catch (SQLException e)
+        {
+            System.out.println("Error al buscar certificado: " + e.getMessage());
+        }
+        return null;
     }
 
 }
