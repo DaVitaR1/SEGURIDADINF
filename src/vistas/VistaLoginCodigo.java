@@ -117,6 +117,9 @@ public class VistaLoginCodigo extends JFrame
      */
     public static void main(String[] args)
     {
+        // Inicializar claves RSA del sistema al arrancar
+        crypto.CryptoManager.cargarClaves(".");
+
         SplashScreen splash = new SplashScreen();
         splash.setVisible(true);
         splash.startLoading();

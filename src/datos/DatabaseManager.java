@@ -264,7 +264,7 @@ public class DatabaseManager
     {
         String sql = "SELECT u.nombre_usuario, c.tema, c.calificacion, c.firma_rsa, c.fecha_emision "
                 + "FROM certificados c JOIN usuarios u ON c.usuario_id = u.id "
-                + "WHERE c.hash_cert = ?";
+                + "WHERE SUBSTR(c.hash_cert, 1, 16) = LOWER(?)";
         try (Connection conn = this.connect(); PreparedStatement pstmt = conn.prepareStatement(sql))
         {
             pstmt.setString(1, hashCert);
@@ -275,7 +275,7 @@ public class DatabaseManager
                 {
                     rs.getString("nombre_usuario"),
                     rs.getString("tema"),
-                    String.valueOf(rs.getDouble("calificacion")),
+                    String.format("%.2f", rs.getDouble("calificacion")),
                     rs.getString("firma_rsa"),
                     rs.getString("fecha_emision")
                 };
