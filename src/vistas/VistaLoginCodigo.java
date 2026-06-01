@@ -38,6 +38,7 @@ public class VistaLoginCodigo extends JFrame
         setIconImage(icon.getImage());
 
         setSize(320, 200);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
@@ -119,7 +120,6 @@ public class VistaLoginCodigo extends JFrame
     {
         // Inicializar claves RSA del sistema al arrancar
         crypto.CryptoManager.cargarClaves(".");
-
         SplashScreen splash = new SplashScreen();
         splash.setVisible(true);
         splash.startLoading();

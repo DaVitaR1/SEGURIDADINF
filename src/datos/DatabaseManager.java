@@ -103,7 +103,7 @@ public class DatabaseManager
             while (rsPreguntas.next())
             {
                 int preguntaId = rsPreguntas.getInt("id");
-                String textoPregunta = rsPreguntas.getString("texto_pregunta");
+                String textoPregunta = CryptoManager.descifrarAES(rsPreguntas.getString("texto_pregunta"));
 
                 // Ahora, por cada pregunta, obtenemos sus opciones
                 List<Opcion> opciones = new ArrayList<>();
@@ -115,7 +115,7 @@ public class DatabaseManager
                     {
                         opciones.add(new Opcion(
                                 rsOpciones.getInt("id"),
-                                rsOpciones.getString("texto_opcion"),
+                                CryptoManager.descifrarAES(rsOpciones.getString("texto_opcion")),
                                 rsOpciones.getBoolean("es_correcta")
                         ));
                     }
@@ -285,6 +285,62 @@ public class DatabaseManager
             System.out.println("Error al buscar certificado: " + e.getMessage());
         }
         return null;
+    }
+
+    public void cifrarDatosExistentes()
+    {
+        String selPreguntas = "SELECT id, texto_pregunta FROM preguntas";
+        String selOpciones = "SELECT id, texto_opcion FROM opciones";
+        try (Connection conn = this.connect())
+        {
+            // Cifrar preguntas
+            try (PreparedStatement sel = conn.prepareStatement(selPreguntas))
+            {
+                ResultSet rs = sel.executeQuery();
+                while (rs.next())
+                {
+                    int id = rs.getInt("id");
+                    String texto = rs.getString("texto_pregunta");
+                    if (texto != null && !texto.startsWith("AES:"))
+                    {
+                        String cifrado = CryptoManager.cifrarAES(texto);
+                        try (PreparedStatement upd = conn.prepareStatement(
+                            "UPDATE preguntas SET texto_pregunta = ? WHERE id = ?"))
+                        {
+                            upd.setString(1, cifrado);
+                            upd.setInt(2, id);
+                            upd.executeUpdate();
+                        }
+                    }
+                }
+            }
+            // Cifrar opciones
+            try (PreparedStatement sel = conn.prepareStatement(selOpciones))
+            {
+                ResultSet rs = sel.executeQuery();
+                while (rs.next())
+                {
+                    int id = rs.getInt("id");
+                    String texto = rs.getString("texto_opcion");
+                    if (texto != null && !texto.startsWith("AES:"))
+                    {
+                        String cifrado = CryptoManager.cifrarAES(texto);
+                        try (PreparedStatement upd = conn.prepareStatement(
+                            "UPDATE opciones SET texto_opcion = ? WHERE id = ?"))
+                        {
+                            upd.setString(1, cifrado);
+                            upd.setInt(2, id);
+                            upd.executeUpdate();
+                        }
+                    }
+                }
+            }
+            System.out.println("Datos cifrados exitosamente.");
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Error al cifrar datos existentes: " + e.getMessage());
+        }
     }
 
 }

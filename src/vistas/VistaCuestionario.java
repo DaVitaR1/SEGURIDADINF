@@ -77,6 +77,7 @@ public class VistaCuestionario extends JFrame
         setIconImage(icon.getImage());
 
         setSize(600, 450); // Un poco más grande para que se vea mejor
+        setResizable(false);
         setLocationRelativeTo(null);
         setLayout(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

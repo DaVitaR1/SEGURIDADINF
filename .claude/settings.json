@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\Usuario\\\\SEGURIDADINF\\\\src\\\\crypto\")",
+      "Bash(Out-Null)",
+      "Bash(Write-Output \"Directorio creado\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\Usuario\\\\SEGURIDADINF\\\\src\\\\crypto\")",
+      "PowerShell(javac -d \"c:\\\\Users\\\\Usuario\\\\SEGURIDADINF\\\\build\\\\classes\" -sourcepath \"c:\\\\Users\\\\Usuario\\\\SEGURIDADINF\\\\src\" $javaFiles 2>&1)",
+      "PowerShell($javaFiles = \"c:\\\\Users\\\\Usuario\\\\SEGURIDADINF\\\\src\\\\crypto\\\\CryptoManager.java\")",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Implementar seguridad criptografica: PBKDF2, RSA y verificacion de certificados *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'Paso 6: inicializar claves RSA en main y corregir buscarCertificadoPorHash *)",
+      "Read(//c/Users/Usuario/SEGURIDADINF/**)"
+    ]
+  }
+}
