@@ -43,6 +43,8 @@ public class CryptoManager
     private static final int LONGITUD_IV_GCM = 12;
     private static final int LONGITUD_TAG_GCM = 128;
 
+    private static SecretKey claveAESCache = null;
+
     // -------------------------------------------------------------------------
     // CONTRASEÑAS — PBKDF2WithHmacSHA256
     // -------------------------------------------------------------------------
@@ -313,6 +315,10 @@ public class CryptoManager
 
     private static SecretKey obtenerClaveAES()
     {
+        if (claveAESCache != null)
+        {
+            return claveAESCache;
+        }
         try
         {
             PBEKeySpec spec = new PBEKeySpec(
@@ -324,7 +330,8 @@ public class CryptoManager
             SecretKeyFactory fabrica = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
             byte[] claveBytes = fabrica.generateSecret(spec).getEncoded();
             spec.clearPassword();
-            return new SecretKeySpec(claveBytes, "AES");
+            claveAESCache = new SecretKeySpec(claveBytes, "AES");
+            return claveAESCache;
         }
         catch (Exception e)
         {

@@ -233,9 +233,6 @@ public class VistaCertificado extends JFrame
             documento.addPage(pagina);
 
             PDDocumentInformation info = documento.getDocumentInformation();
-            info.setTitle("Certificado de Finalizacion");
-            info.setAuthor(nombreUsuarioGuardado);
-            info.setSubject(temaGuardado);
             info.setKeywords(contenidoCertGuardado);
             info.setCustomMetadataValue("firma_rsa", firmaRsaGuardada);
             info.setCustomMetadataValue("hash_cert", hashCertGuardado);
